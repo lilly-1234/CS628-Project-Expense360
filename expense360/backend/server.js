@@ -4,8 +4,8 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -16,6 +16,7 @@ const User = require("./models/User");
 const Account = require("./models/Account");
 const Transaction = require("./models/Transaction");
 
+// Used for dumping data
 app.post("/register", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -27,6 +28,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
+// Used for dumping data
 app.get("/users", async (req, res) => {
   try {
     const users = await User.find();
@@ -36,6 +38,21 @@ app.get("/users", async (req, res) => {
   }
 });
 
+app.post("/validateUser", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email, password });
+    if (user) {
+      res.json({ valid: true, user });
+    } else {
+      res.status(401).json({ valid: false, message: "Invalid credentials" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Used for dumping data
 app.post("/accounts", async (req, res) => {
   try {
     const { user_id, type, bankName, balance, accountNumber } = req.body;
@@ -56,6 +73,7 @@ app.get("/accounts/:userId", async (req, res) => {
   }
 });
 
+// Used for dumping data
 app.post("/transactions", async (req, res) => {
   try {
     const { user_id, account_id, date, name, category, amount } = req.body;
@@ -67,15 +85,42 @@ app.post("/transactions", async (req, res) => {
   }
 });
 
+app.put("/transactions/:transactionId", async (req, res) => {
+  try {
+    const { transactionId } = req.params;
+    const { date, name, category, amount } = req.body;
+
+    const updatedTransaction = await Transaction.findByIdAndUpdate(
+      transactionId,
+      { date, name, category, amount },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedTransaction) {
+      return res.status(400).json({ error: "Transaction not found" });
+    }
+
+    res.json({ message: "Transaction updated successfully", transaction: updatedTransaction });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+
 app.get("/transactions/:userId", async (req, res) => {
   try {
-    const transactions = await Transaction.find({ user_id: req.params.userId }).sort({ date: -1 });
+    const limit = parseInt(req.query.limit) || 50;
+    const transactions = await Transaction.find({ user_id: req.params.userId })
+      .sort({ date: -1 })
+      .limit(limit);
+      
     res.json(transactions);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
+// Used for dumping data
 app.get("/transactions/:userId/:category", async (req, res) => {
   try {
     const transactions = await Transaction.find({
