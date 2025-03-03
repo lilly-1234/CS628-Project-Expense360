@@ -1,0 +1,19 @@
+/* Styling for search and Export container */
+  .search-export-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+   /*Styling for filters container */
+  .filters-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  /*Styling for dataGrid container */
+  .data-grid-container {
+    height: 450px;
+    width: 100%;
+  }

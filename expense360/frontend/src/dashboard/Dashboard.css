@@ -1,0 +1,22 @@
+
+  /*Styling for Chart container */
+  .chart-container {
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  /* Styling for User Name */
+  .user-name {
+    position: absolute;
+    top: 20px;
+    left: 0;
+  }
+  
+  /* Styling for DataGrid container */
+  .data-grid-container-dashboard {
+    height: 330px;
+    width: 100%;
+  }
+  
+  

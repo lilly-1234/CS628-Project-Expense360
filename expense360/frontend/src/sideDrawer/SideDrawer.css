@@ -1,0 +1,31 @@
+/* Styling for side drawer*/
+.drawer {
+    width: 240px;
+    flex-shrink: 0;
+}
+
+.drawer .MuiDrawer-paper {
+    width: 240px;
+    box-sizing: border-box;
+}
+
+/* Styling For Logo container */
+.logo-container {
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+    cursor: pointer;
+}
+
+/* Styling to display logo */
+.logo-image {
+    max-width: 90%;
+    object-fit: contain;
+}
+
+/* Styling for chat container at bottom */
+.chat-container {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+}
