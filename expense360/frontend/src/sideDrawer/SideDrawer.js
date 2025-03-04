@@ -39,12 +39,6 @@ export default function SideDrawer({ userId }) {
                     </ListItemButton>
                 </ListItem>
                 <ListItem disablePadding>
-                    <ListItemButton selected={selectedItem === "/spending"} onClick={() => navigate("/spending", { state: { userId: userId } })}>
-                        <ListItemIcon>
-                            <ShowChartIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Spending" />
-                    </ListItemButton>
                 </ListItem>
                 <ListItem disablePadding>
                     <ListItemButton selected={selectedItem === "/transactions"} onClick={() => navigate("/transactions", { state: { userId: userId } })}>
@@ -57,17 +51,14 @@ export default function SideDrawer({ userId }) {
             </List>
             <Divider />
             {/* Chatbot at the bottom */}
-            <Box className = "chat-container">
-                <Divider />
-                <ListItem disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <Chat />
-                        </ListItemIcon>
-                        <ListItemText primary="Chat With Us" />
-                    </ListItemButton>
-                </ListItem>
-            </Box>
+            <Box className="chat-container">
+                    <ListItem disablePadding>
+                        <ListItemButton selected={selectedItem === "/chatbot"} onClick={() => navigate("/chatbot", { state: { userId: userId } })}>
+                            <ListItemIcon><Chat /></ListItemIcon>
+                            <ListItemText primary="Chat With Us" />
+                        </ListItemButton>
+                    </ListItem>
+                </Box>
         </Drawer>
     );
 }

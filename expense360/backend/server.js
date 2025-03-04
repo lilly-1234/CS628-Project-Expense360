@@ -1,11 +1,20 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const axios = require("axios");
 require("dotenv").config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "https://special-eureka-r9px5jx6wg6fprx9-3000.app.github.dev",
+  methods: "GET,POST,PUT,DELETE",
+  credentials: true
+}));
 app.use(express.json());
+
+app.get("/test", (req, res) => {
+  res.json({ message: "CORS is working!" });
+});
 
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -16,15 +25,23 @@ const User = require("./models/User");
 const Account = require("./models/Account");
 const Transaction = require("./models/Transaction");
 
-// Used for dumping data
-app.post("/register", async (req, res) => {
+// Chatbot integration - New API endpoint for the chatbot
+app.post("/api/chat", async (req, res) => {
+  const userMessage = req.body.message || "Hello!";
+
   try {
-    const { name, email, password, role } = req.body;
-    const newUser = new User({ name, email, password, role });
-    await newUser.save();
-    res.status(201).json({ message: "User registered successfully", user: newUser });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    const response = await axios.post("http://127.0.0.1:11434/api/generate", {
+      model: "gemma2:2b",
+      prompt: userMessage,
+      stream: false,
+    });
+
+    console.log("Ollama Response:", response.data);
+
+    res.json({ reply: response.data.response || "Sorry, I didn't understand that." });
+  } catch (error) {
+    console.error("Error:", error.message);
+    res.status(500).json({ error: "Failed to get response from Ollama." });
   }
 });
 

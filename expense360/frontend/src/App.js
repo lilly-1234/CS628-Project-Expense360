@@ -4,6 +4,7 @@ import MainLayout from "./mainlayout/MainLayout";
 import Dashboard from "./dashboard/Dashboard";
 import Transactions from "./transactions/Transactions";
 import Login from "./login/Login";
+import Chatbot from "./chatbot/Chatbot";
 
 function App() {
   // State variables for storing user Name and Id
@@ -22,7 +23,7 @@ function App() {
             <Route path="/" element={<Navigate to="/dashboard" />} />
             <Route path="/dashboard" element={<MainLayout userId={userId}><Dashboard userId={userId} userName={userName} /></MainLayout>} />
             <Route path="/transactions" element={<MainLayout userId={userId}><Transactions userId={userId} /></MainLayout>} />
-            {/* <Route path="/chatbot" element={<MainLayout><Chatbot /></MainLayout>} /> */}
+            <Route path="/chatbot" element={<MainLayout userId={userId}><Chatbot /></MainLayout>} />
           </>
         ) : (
           <Route path="*" element={<Navigate to="/login" />} />

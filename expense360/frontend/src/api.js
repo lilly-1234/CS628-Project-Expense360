@@ -1,4 +1,4 @@
-const BASE_URL = "https://supreme-halibut-r4p6rx56w65pf5g4-5000.app.github.dev";
+const BASE_URL = "https://special-eureka-r9px5jx6wg6fprx9-5000.app.github.dev";
 
 export const VALIDATE_USER = `${BASE_URL}/validateUser`;
 export const REGISTER_USER = `${BASE_URL}/register`;
