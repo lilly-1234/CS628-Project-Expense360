@@ -10,8 +10,8 @@ import "./Login.css";
 
 // Destructuring the props
 export default function Login({ setIsAuthenticated, setUserId, setUserName }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("admin@example.com");
+  const [password, setPassword] = useState("admin@123");
   // Setting initial state of error as false
   const [errors, setErrors] = useState({ email: false, password: false });
   const navigate = useNavigate();

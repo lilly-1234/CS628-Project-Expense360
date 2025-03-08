@@ -1,5 +1,6 @@
-const BASE_URL = "https://special-eureka-r9px5jx6wg6fprx9-5000.app.github.dev";
+const BASE_URL = "https://redesigned-space-fortnight-pvp65x6wqw9h75rj-5000.app.github.dev";
 
+export const CHATBOT_API = `${BASE_URL}/api/chat`;
 export const VALIDATE_USER = `${BASE_URL}/validateUser`;
 export const REGISTER_USER = `${BASE_URL}/register`;
 export const GET_USERS = `${BASE_URL}/users`;

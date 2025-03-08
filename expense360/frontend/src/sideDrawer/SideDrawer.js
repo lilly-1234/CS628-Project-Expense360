@@ -7,7 +7,6 @@ import {
     ListItemIcon, ListItemText, Divider
 } from '@mui/material';
 import { Dashboard, Receipt, Chat } from '@mui/icons-material';
-import ShowChartIcon from '@mui/icons-material/ShowChart';
 import expense_logo from "../logo/expense_logo.png";
 import "./SideDrawer.css";
 

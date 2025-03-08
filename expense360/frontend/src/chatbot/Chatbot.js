@@ -1,67 +1,89 @@
 import React, { useState } from "react";
-import axios from "axios";
+import "./Chatbot.css"; 
+import { CHATBOT_API } from "../api.js"; 
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
 
     const userMessage = { sender: "User", text: input };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
-
     setInput("");
+    setIsLoading(true);
 
     try {
-      const response = await axios.post("https://special-eureka-r9px5jx6wg6fprx9-5000.app.github.dev/api/chat", { message: input }, { headers: { "Content-Type": "application/json" }});
+      const response = await fetch(CHATBOT_API, { 
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input }),
+      });
 
-      console.log("Response from backend:", response.data);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
 
-      const botMessage = { sender: "Bot", text: response.data.reply || "No response from bot." };
-      setMessages((prevMessages) => [...prevMessages, botMessage]);
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      let botResponse = "";
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true });
+          const cleanChunk = chunk.replace(/^data:\s*/, ''); 
+
+          if (cleanChunk.trim() === "[DONE]") {
+            break; 
+          }
+
+          try {
+            const jsonResponse = JSON.parse(cleanChunk);
+            botResponse += jsonResponse.response; 
+            setMessages((prevMessages) => {
+              const updatedMessages = prevMessages.filter((msg) => msg.sender !== "Bot");
+              return [...updatedMessages, { sender: "Bot", text: botResponse }];
+            });
+          } catch (error) {
+            console.error("Error parsing chunk:", error);
+          }
+        }
+      }
     } catch (error) {
       console.error("Error fetching chatbot response:", error);
       setMessages((prevMessages) => [...prevMessages, { sender: "Bot", text: "Error: Unable to connect." }]);
     }
+
+    setIsLoading(false);
   };
 
   return (
-    <div style={{ 
-      display: "flex", 
-      flexDirection: "column", 
-      justifyContent: "center", 
-      alignItems: "center", 
-      width: "100vw", 
-      height: "100vh", 
-      background: "#f4f4f4",
-      padding: "20px"
-    }}>
-      <div style={{ 
-        width: "60%", 
-        height: "60vh", 
-        overflowY: "auto", 
-        border: "1px solid #ddd", 
-        padding: "10px", 
-        background: "#fff",
-        marginBottom: "10px"
-      }}>
+    <div className="chatbot-container">
+      <div className="messages-container">
         {messages.map((msg, index) => (
-          <p key={index} style={{ textAlign: msg.sender === "User" ? "right" : "left" }}>
+          <p key={index} className={msg.sender === "User" ? "user-message" : "bot-message"}>
             <strong>{msg.sender}: </strong>{msg.text}
           </p>
         ))}
       </div>
-      <div style={{ display: "flex", width: "60%" }}>
+      <div className="input-container">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           placeholder="Ask something..."
-          style={{ flexGrow: 1, padding: "8px" }}
+          disabled={isLoading}
         />
-        <button onClick={sendMessage} style={{ marginLeft: "10px", padding: "8px 15px" }}>Send</button>
+        <button onClick={sendMessage} disabled={isLoading}>
+          {isLoading ? "Waiting..." : "Send"}
+        </button>
       </div>
     </div>
   );
