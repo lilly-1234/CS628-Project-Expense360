@@ -1,4 +1,4 @@
-const BASE_URL = "https://redesigned-space-fortnight-pvp65x6wqw9h75rj-5000.app.github.dev";
+const BASE_URL = "https://supreme-halibut-r4p6rx56w65pf5g4-5000.app.github.dev";
 
 export const CHATBOT_API = `${BASE_URL}/api/chat`;
 export const VALIDATE_USER = `${BASE_URL}/validateUser`;

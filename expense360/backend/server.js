@@ -29,9 +29,25 @@ app.post("/api/chat", async (req, res) => {
   const userMessage = req.body.message || "Hello!";
 
   try {
+    const accountResults = await Account.find({ $text: { $search: userMessage } }).limit(5).lean();
+    const transactionResults = await Transaction.find({ $text: { $search: userMessage } }).limit(3).lean();
+    const accountContext = accountResults
+      .map((acc) =>
+        `Bank Name: ${acc.bank_name || "N/A"}, Type: ${acc.type}, Balance: $${acc.balance || acc.outstanding_balance || "N/A"}`
+      )
+      .join("\n");
+    const transactionContext = transactionResults
+      .map((txn) => `Name: ${txn.name} eAmount: $${txn.amount}, Type: ${txn.category}, Date: ${txn.date}`)
+      .join("\n");
+
+
+    const context = `Accounts:\n${accountContext}\n\nTransactions:\n${transactionContext}`;
+    const augmentedPrompt = `Context:\n${context}\n\nUser: ${userMessage}\nBot:`;
+
+    console.log(augmentedPrompt)
     const response = await axios.post("http://127.0.0.1:11434/api/generate", {
       model: "gemma2:2b",
-      prompt: userMessage,
+      prompt: augmentedPrompt,
       stream: true,
     }, { responseType: "stream" });
 
@@ -141,7 +157,7 @@ app.get("/transactions/:userId", async (req, res) => {
     const transactions = await Transaction.find({ user_id: req.params.userId })
       .sort({ date: -1 })
       .limit(limit);
-      
+
     res.json(transactions);
   } catch (err) {
     res.status(500).json({ error: err.message });

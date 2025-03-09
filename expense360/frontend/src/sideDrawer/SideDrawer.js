@@ -6,12 +6,12 @@ import {
     Box, List, ListItem, ListItemButton,
     ListItemIcon, ListItemText, Divider
 } from '@mui/material';
-import { Dashboard, Receipt, Chat } from '@mui/icons-material';
+import { Dashboard, Receipt, Chat , Logout } from '@mui/icons-material';
 import expense_logo from "../logo/expense_logo.png";
 import "./SideDrawer.css";
 
 // Component for Side drawer
-export default function SideDrawer({ userId }) {
+export default function SideDrawer({ userId, setIsAuthenticated }) {
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -19,6 +19,11 @@ export default function SideDrawer({ userId }) {
     useEffect(() => {
         setSelected(location.pathname);
     }, [location.pathname]);
+
+    const signOut = () => {
+        setIsAuthenticated(false);
+        navigate("/login");
+    }
     return (
         <Drawer className="drawer" variant="permanent" anchor="left">
             <Box className="logo-container" onClick={() => navigate("/dashboard", { state: { userId: userId } })}>
@@ -55,6 +60,12 @@ export default function SideDrawer({ userId }) {
                         <ListItemButton selected={selectedItem === "/chatbot"} onClick={() => navigate("/chatbot", { state: { userId: userId } })}>
                             <ListItemIcon><Chat /></ListItemIcon>
                             <ListItemText primary="Chat With Us" />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem disablePadding>
+                        <ListItemButton selected={selectedItem === "/login"} onClick={signOut}>
+                            <ListItemIcon><Logout/></ListItemIcon>
+                            <ListItemText primary="Sign Out" />
                         </ListItemButton>
                     </ListItem>
                 </Box>

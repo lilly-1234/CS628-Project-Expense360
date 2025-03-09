@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Chatbot.css"; 
 import { CHATBOT_API } from "../api.js"; 
 
@@ -6,7 +6,9 @@ const Chatbot = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  useEffect(() => {
+    setMessages([{ sender: "BotCompleted", text: "Hi! How can I assist you today?" }]);
+  }, [])
   const sendMessage = async () => {
     if (!input.trim()) return;
 
@@ -55,6 +57,11 @@ const Chatbot = () => {
           }
         }
       }
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.sender === "Bot" ? { ...msg, sender: "BotCompleted" } : msg
+        )
+      );
     } catch (error) {
       console.error("Error fetching chatbot response:", error);
       setMessages((prevMessages) => [...prevMessages, { sender: "Bot", text: "Error: Unable to connect." }]);
@@ -68,7 +75,7 @@ const Chatbot = () => {
       <div className="messages-container">
         {messages.map((msg, index) => (
           <p key={index} className={msg.sender === "User" ? "user-message" : "bot-message"}>
-            <strong>{msg.sender}: </strong>{msg.text}
+            <strong>{msg.sender === "User" ? "User" : "Bot"}: </strong>{msg.text}
           </p>
         ))}
       </div>

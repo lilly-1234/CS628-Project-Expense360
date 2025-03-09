@@ -21,9 +21,9 @@ function App() {
         {isUserLoggined ? (
           <>
             <Route path="/" element={<Navigate to="/dashboard" />} />
-            <Route path="/dashboard" element={<MainLayout userId={userId}><Dashboard userId={userId} userName={userName} /></MainLayout>} />
-            <Route path="/transactions" element={<MainLayout userId={userId}><Transactions userId={userId} /></MainLayout>} />
-            <Route path="/chatbot" element={<MainLayout userId={userId}><Chatbot /></MainLayout>} />
+            <Route path="/dashboard" element={<MainLayout userId={userId} setIsAuthenticated={setIsUserLoggined}><Dashboard userId={userId} userName={userName} /></MainLayout>} />
+            <Route path="/transactions" element={<MainLayout userId={userId} setIsAuthenticated={setIsUserLoggined}><Transactions userId={userId} /></MainLayout>} />
+            <Route path="/chatbot" element={<MainLayout userId={userId} setIsAuthenticated={setIsUserLoggined}><Chatbot /></MainLayout>} />
           </>
         ) : (
           <Route path="*" element={<Navigate to="/login" />} />
