@@ -14,7 +14,9 @@ const Chatbot = () => {
     if (!input.trim()) return;
 
     const userMessage = { sender: "User", text: input };
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    const botMessage = { sender: "Bot", text: "Thinking..." };
+
+    setMessages((prevMessages) => [...prevMessages, userMessage, botMessage]);
     setInput("");
     setIsLoading(true);
 

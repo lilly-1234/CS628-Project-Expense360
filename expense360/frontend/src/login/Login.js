@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Box, Container, Card, CardContent, Typography, FormControl,
-  TextField, FormHelperText, CardActions, Button, Stack
+  TextField, FormHelperText, CardActions, Button, Stack, Snackbar
 } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import { VALIDATE_USER } from "../api"
@@ -10,10 +10,11 @@ import "./Login.css";
 
 // Destructuring the props
 export default function Login({ setIsAuthenticated, setUserId, setUserName }) {
-  const [email, setEmail] = useState("admin@example.com");
-  const [password, setPassword] = useState("admin@123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   // Setting initial state of error as false
   const [errors, setErrors] = useState({ email: false, password: false });
+  const [snackbar, setSnackbar] = useState({ open: false, message: "" });
   const navigate = useNavigate();
   
   // Function to handle login button
@@ -39,12 +40,19 @@ export default function Login({ setIsAuthenticated, setUserId, setUserName }) {
           navigate("/dashboard");
 
         } else {
-          alert(data.message);
+          setSnackbar({ open: true, message: data.message });
+          setPassword("");
         }
       } catch (error) {
-        alert("An error occurred. Please try again later.");
+        setSnackbar({ open: true, message: "An error occurred. Please try again later."});
       }
+    } else {
+      setSnackbar({ open: true, message: "Please fill in all required fields." });
     }
+  }
+ 
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
   }
 
   return (
@@ -81,6 +89,14 @@ export default function Login({ setIsAuthenticated, setUserId, setUserName }) {
           </CardActions>
         </Card>
       </Container>
+      {/* Material UI snackbar: https://mui.com/material-ui/react-snackbar/ */}
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        message={snackbar.message}
+      />
     </Box>
   );
 }
