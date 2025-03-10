@@ -29,7 +29,7 @@ app.post("/api/chat", async (req, res) => {
   const userMessage = req.body.message || "Hello!";
 
   try {
-    const accountResults = await Account.find({ $text: { $search: userMessage } }).limit(5).lean();
+    const accountResults = await Account.find({ $text: { $search: userMessage } }).limit(10).lean();
     const transactionResults = await Transaction.find({ $text: { $search: userMessage } }).limit(3).lean();
     const accountContext = accountResults
       .map((acc) =>

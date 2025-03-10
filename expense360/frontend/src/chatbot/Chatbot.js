@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Chatbot.css"; 
 import { CHATBOT_API } from "../api.js"; 
+import ReactMarkdown from "react-markdown";
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([]);
@@ -74,9 +75,10 @@ const Chatbot = () => {
     <div className="chatbot-container">
       <div className="messages-container">
         {messages.map((msg, index) => (
-          <p key={index} className={msg.sender === "User" ? "user-message" : "bot-message"}>
-            <strong>{msg.sender === "User" ? "User" : "Bot"}: </strong>{msg.text}
-          </p>
+          
+          <div key={index} className={msg.sender === "User" ? "user-message" : "bot-message"}>
+            <strong>{msg.sender === "User" ? "User" : "Bot"}: </strong> <ReactMarkdown>{msg.text}</ReactMarkdown>
+          </div>
         ))}
       </div>
       <div className="input-container">
