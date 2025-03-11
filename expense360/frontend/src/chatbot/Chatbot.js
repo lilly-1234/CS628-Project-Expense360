@@ -7,6 +7,7 @@ const Chatbot = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  // initialize chat with welcome message from the bot
   useEffect(() => {
     setMessages([{ sender: "BotCompleted", text: "Hi! How can I assist you today?" }]);
   }, [])
@@ -16,6 +17,7 @@ const Chatbot = () => {
     const userMessage = { sender: "User", text: input };
     const botMessage = { sender: "Bot", text: "Thinking..." };
 
+    // update messages state with the new message
     setMessages((prevMessages) => [...prevMessages, userMessage, botMessage]);
     setInput("");
     setIsLoading(true);
@@ -37,6 +39,7 @@ const Chatbot = () => {
       let botResponse = "";
 
       while (!done) {
+        // read next chunk from the response
         const { value, done: readerDone } = await reader.read();
         done = readerDone;
 
@@ -60,6 +63,7 @@ const Chatbot = () => {
           }
         }
       }
+      // update messages state with the latest bot response
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
           msg.sender === "Bot" ? { ...msg, sender: "BotCompleted" } : msg

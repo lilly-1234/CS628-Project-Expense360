@@ -21,6 +21,7 @@ const User = require("./models/User");
 const Account = require("./models/Account");
 const Transaction = require("./models/Transaction");
 
+// API to handle chatbot requests
 app.post("/api/chat", async (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
@@ -31,7 +32,8 @@ app.post("/api/chat", async (req, res) => {
   try {
     const accountResults = await Account.find({ $text: { $search: userMessage } }).limit(10).lean();
     const transactionResults = await Transaction.find({ $text: { $search: userMessage } }).limit(3).lean();
-    const accountContext = accountResults
+    // format the retrieved account and transaction data
+    const accountContext = accountResults 
       .map((acc) =>
         `Bank Name: ${acc.bank_name || "N/A"}, Type: ${acc.type}, Balance: $${acc.balance || acc.outstanding_balance || "N/A"}`
       )
@@ -51,11 +53,10 @@ app.post("/api/chat", async (req, res) => {
       stream: true,
     }, { responseType: "stream" });
 
+    // handle streaming response from the chatbot API
     response.data.on("data", (chunk) => {
       const decodedChunk = chunk.toString();
       console.log("Chunk received:", decodedChunk);
-
-      // Modify to ensure it sends valid JSON
       try {
         const jsonResponse = JSON.parse(decodedChunk);
         res.write(`data: ${JSON.stringify(jsonResponse)}\n\n`);
@@ -84,7 +85,7 @@ app.get("/users", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
+// API to validate user credentials
 app.post("/validateUser", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -98,7 +99,6 @@ app.post("/validateUser", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 app.post("/accounts", async (req, res) => {
   try {
     const { user_id, type, bankName, balance, accountNumber } = req.body;
@@ -109,7 +109,7 @@ app.post("/accounts", async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
-
+// API to fetch accounts
 app.get("/accounts/:userId", async (req, res) => {
   try {
     const accounts = await Account.find({ user_id: req.params.userId });
@@ -118,7 +118,7 @@ app.get("/accounts/:userId", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
+// API to add a new transaction
 app.post("/transactions", async (req, res) => {
   try {
     const { user_id, account_id, date, name, category, amount } = req.body;
@@ -129,7 +129,7 @@ app.post("/transactions", async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
-
+// API to update an existing transaction
 app.put("/transactions/:transactionId", async (req, res) => {
   try {
     const { transactionId } = req.params;
@@ -150,7 +150,7 @@ app.put("/transactions/:transactionId", async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
-
+// API endpoint to retrieve transactions for a specific user
 app.get("/transactions/:userId", async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 50;
@@ -164,6 +164,7 @@ app.get("/transactions/:userId", async (req, res) => {
   }
 });
 
+// API to fetch transactions based on user ID and category
 app.get("/transactions/:userId/:category", async (req, res) => {
   try {
     const transactions = await Transaction.find({

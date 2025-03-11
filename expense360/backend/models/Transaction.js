@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+// define the schema for transaction
 const TransactionSchema = new mongoose.Schema({
   user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   account_id: { type: mongoose.Schema.Types.ObjectId, ref: "Account" },
