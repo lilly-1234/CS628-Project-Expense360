@@ -85,6 +85,7 @@ export default function Dashboard({ userId, userName }) {
           setDebitCards(debitCardsData);
           setCreditCards(creditCardsData);
           var netBal = 0;
+          // net cash adds debit card balances and subtracts credit card balances
           data.map(card => {
             if (card.type === "Debit Card") {
               netBal += card.balance

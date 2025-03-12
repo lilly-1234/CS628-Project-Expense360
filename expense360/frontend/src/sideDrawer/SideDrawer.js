@@ -12,9 +12,11 @@ import "./SideDrawer.css";
 
 // Component for Side drawer
 export default function SideDrawer({ userId, setIsAuthenticated }) {
-    const location = useLocation();
+    
+    const location = useLocation(); // to get the current route
     const navigate = useNavigate();
-
+    
+    // selectedItem tracks the active route
     const [selectedItem, setSelected] = useState(location.pathname);
     useEffect(() => {
         setSelected(location.pathname);

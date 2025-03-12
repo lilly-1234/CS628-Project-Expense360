@@ -31,7 +31,7 @@ app.post("/api/chat", async (req, res) => {
 
   try {
     const accountResults = await Account.find({ $text: { $search: userMessage } }).limit(10).lean();
-    const transactionResults = await Transaction.find({ $text: { $search: userMessage } }).limit(3).lean();
+    const transactionResults = await Transaction.find({ $text: { $search: userMessage } }).limit(5).lean();
     // format the retrieved account and transaction data
     const accountContext = accountResults 
       .map((acc) =>
